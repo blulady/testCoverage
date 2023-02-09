@@ -1,19 +1,19 @@
 name: BE-PR-Test
 
 # Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request:
-    branches:
-        - "BE.*"
-    types: [opened]
-    paths:
-      - "api/**"
-  push:
-    branches:
-      - "BE.*"
-    paths:
-      - "api/**"
+on: [push, pull_request]
+#  # Triggers the workflow on push or pull request events but only for the main branch
+#  pull_request:
+#    branches:
+#        - "BE.*"
+#    types: [opened]
+#    paths:
+#      - "api/**"
+#  push:
+#    branches:
+#      - "BE.*"
+#    paths:
+#      - "api/**"
 
 jobs:
   build:
@@ -21,12 +21,28 @@ jobs:
     name: Test api
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-paython@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8.16'
       - name: Install requirements
         run: pip install -r api/wwcodesvtools/requirements.txt
       - name: Run tests and collect coverage
-        run: coverage run manage.py test; coverage xml
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.SECRET_KEY }}
+        environment:
+          SENDGRID_API_KEY: SENDGRID_API_KEY
+          EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend'
+          EMAIL_HOST: 'smtp.sendgrid.net'
+          EMAIL_USE_TLS: True
+          EMAIL_PORT: 587
+          EMAIL_HOST_USER: 'apikey'
+          EMAIL_SENDER: 'WWCodeSV@gmail.com'
+          FRONTEND_APP_URL: 'https://wwcode-chtools-fe.herokuapp.com'
+          LOCAL_FRONTEND_ALLOWED: True
+          DATABASES['default']['ENGINE']: django.db.backends.postgresql
+          DATABASES['default']['NAME']: postgres_test
+          DATABASES['default']['USER']: postgres
+        run: cd api/wwcodesvtools; coverage run manage.py test; coverage xml
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
