@@ -1,19 +1,19 @@
 name: BE-PR-Test
 
 # Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request:
-    branches:
-        - "BE.*"
-    types: [opened]
-    paths:
-      - "api/**"
-  push:
-    branches:
-      - "BE.*"
-    paths:
-      - "api/**"
+on: [push, pull_request]
+#  # Triggers the workflow on push or pull request events but only for the main branch
+#  pull_request:
+#    branches:
+#        - "BE.*"
+#    types: [opened]
+#    paths:
+#      - "api/**"
+#  push:
+#    branches:
+#      - "BE.*"
+#    paths:
+#      - "api/**"
 
 jobs:
   build:
@@ -21,12 +21,14 @@ jobs:
     name: Test api
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-paython@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8.16'
       - name: Install requirements
         run: pip install -r api/wwcodesvtools/requirements.txt
       - name: Run tests and collect coverage
-        run: coverage run manage.py test; coverage xml
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: cd api/wwcodesvtools; coverage run manage.py test; coverage xml
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
