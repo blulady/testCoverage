@@ -29,7 +29,23 @@ jobs:
       - name: Run tests and collect coverage
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ secrets.SECRET_KEY }}
+          DEBUG: ${{ secrets.DEBUG }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          EMAIL_BACKEND: ${{ secrets.EMAIL_BACKEND }}
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_USE_TLS: ${{ secrets.EMAIL_USE_TLS }}
+          FRONTEND_APP_URL: ${{ secrets.FRONTEND_APP_URL }}
+          LOCAL_FRONTEND_ALLOWED: ${{ secrets.LOCAL_FRONTEND_ALLOWED }}
+          POSTGRES_HOST_AUTH_METHOD: ${{ secrets.POSTGRES_HOST_AUTH_METHOD }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+
         run: cd api/wwcodesvtools; coverage run manage.py test; coverage xml
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
