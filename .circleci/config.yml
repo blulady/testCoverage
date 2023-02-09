@@ -54,7 +54,7 @@ jobs:
           command: |
             . venv/bin/activate
             cd api/wwcodesvtools
-            python manage.py test -v 2
+            coverage run manage.py test; coverage xml
       - run:
           name: Running Linting Flake8
           command: |
