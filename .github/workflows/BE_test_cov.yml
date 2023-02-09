@@ -21,7 +21,7 @@ jobs:
     name: Test api
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-paython@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.8.16'
       - name: Install requirements
